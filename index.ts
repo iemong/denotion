@@ -1,20 +1,24 @@
-import {
-  DOMParser,
-  Element,
-} from "https://deno.land/x/deno_dom/deno-dom-wasm.ts";
+import { DOMParser, Element } from "https://deno.land/x/deno_dom/deno-dom-wasm.ts";
 
-const doc = new DOMParser().parseFromString(
-  `
-  <h1>Hello World!</h1>
-  <p>Hello from <a href="https://deno.land/">Deno!</a></p>
-`,
-  "text/html",
-)!;
+try {
+  const res = await fetch("https://note.com/kiyoshidainagon/likes");
 
-const p = doc.querySelector("p")!;
+  const text = await res.text();
 
-console.log(p.textContent); // "Hello from Deno!"
-console.log(p.childNodes[1].textContent); // "Deno!"
+  const doc = new DOMParser().parseFromString(
+    text,
+    "text/html",
+  );
 
-p.innerHTML = "DOM in <b>Deno</b> is pretty cool";
-console.log(p.children[0].outerHTML); // "<b>Deno</b>"
+  if (!doc) throw new Error("no document.");
+
+  const notes = doc.querySelectorAll(".o-textNote");
+
+  const linkList = Array.from(notes).map(($note) => {
+    const $anchor = ($note as Element).querySelector(".o-textNote__link");
+    return $anchor?.getAttribute("href");
+  });
+  console.log(linkList);
+} catch (e) {
+  console.error(e);
+}
