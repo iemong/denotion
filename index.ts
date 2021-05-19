@@ -1,8 +1,20 @@
-import puppeteer from "https://deno.land/x/puppeteer@9.0.0/mod.ts";
+import {
+  DOMParser,
+  Element,
+} from "https://deno.land/x/deno_dom/deno-dom-wasm.ts";
 
-const browser = await puppeteer.launch();
-const page = await browser.newPage();
-await page.goto("https://example.com");
-await page.screenshot({ path: "example.png" });
+const doc = new DOMParser().parseFromString(
+  `
+  <h1>Hello World!</h1>
+  <p>Hello from <a href="https://deno.land/">Deno!</a></p>
+`,
+  "text/html",
+)!;
 
-await browser.close();
+const p = doc.querySelector("p")!;
+
+console.log(p.textContent); // "Hello from Deno!"
+console.log(p.childNodes[1].textContent); // "Deno!"
+
+p.innerHTML = "DOM in <b>Deno</b> is pretty cool";
+console.log(p.children[0].outerHTML); // "<b>Deno</b>"
