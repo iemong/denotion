@@ -7,3 +7,5 @@ watch:
 	deno run --watch --allow-net --allow-read --allow-write --allow-env --allow-run --unstable index.ts
 run:
 	deno run --allow-net --allow-read --allow-write --allow-env --allow-run --unstable index.ts
+build:
+	deno compile --allow-net --allow-read --allow-write --allow-env --allow-run --unstable index.ts
